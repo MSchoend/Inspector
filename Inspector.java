@@ -45,14 +45,50 @@ public class Inspector {
     		//parameters + types
     		//modifiers
     	//Methods
-    	//Method methods[] = clazz.getMethods();
+    	Method methods[] = clazz.getMethods();
+    	for(Method m : methods) {
+    		outputBuilder.append(padding + " METHOD - ");
+    		outputBuilder.append(interpretModifiers(m.getModifiers()));
+    		outputBuilder.append(m.getName() + "(");
+    		
+    		Parameter params[] = m.getParameters();
+    		for(Parameter p : params) {
+    			if(p.getType().getComponentType() == null) {
+    				outputBuilder.append(p.getType() + " " + p.getName() + ", ");
+    			} else {
+    				outputBuilder.append(p.getType().getComponentType() + "[] " +p.getName() + ", ");
+    			}
+    		}
+    		outputBuilder.append(")\n");
+    	}
     		//name
     		//Exceptions
     		//parameters + types
     		//return type
     		//modifiers
     	//Fields
-    	//Field fields[] = clazz.getFields();
+    	Field fields[] = clazz.getFields();
+    	for(Field f : fields){
+    		outputBuilder.append(" FIELD - ");
+    		outputBuilder.append(interpretModifiers(f.getModifiers()));
+    		outputBuilder.append(f.getName() + " = ");
+    		
+    		if(f.getType().isArray()){
+    			
+    		} else if (/*is a class*/false){
+    			
+    		} else { //is a primitive
+    			try {
+					outputBuilder.append(f.get(obj).toString());
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	}
     		//name
     		//type
     		//modifiers
