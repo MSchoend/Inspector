@@ -49,6 +49,7 @@ public class Inspector {
     	for(Method m : methods) {
     		outputBuilder.append(padding + " METHOD - ");
     		outputBuilder.append(interpretModifiers(m.getModifiers()));
+    		outputBuilder.append(m.getReturnType() + " ");
     		outputBuilder.append(m.getName() + "(");
     		
     		Parameter params[] = m.getParameters();
@@ -59,7 +60,13 @@ public class Inspector {
     				outputBuilder.append(p.getType().getComponentType() + "[] " +p.getName() + ", ");
     			}
     		}
-    		outputBuilder.append(")\n");
+    		outputBuilder.append(")\n" + padding + " -EXCEPTIONS: ");
+    		
+    		Class<?>[] exceps = m.getExceptionTypes();
+    		for(Class<?> c : exceps) {
+    			outputBuilder.append(c.getName() + " ");
+    		}
+    		outputBuilder.append("\n");
     	}
     		//name
     		//Exceptions
@@ -73,18 +80,22 @@ public class Inspector {
     		outputBuilder.append(interpretModifiers(f.getModifiers()));
     		outputBuilder.append(f.getName() + " = ");
     		
-    		if(f.getType().isArray()){
-    			
+    		Class<?> t = f.getType();
+    		
+    		if(t.isArray()){
+    			try {
+					outputBuilder.append(processArray(f, obj));
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
     		} else if (/*is a class*/false){
     			
     		} else { //is a primitive
     			try {
 					outputBuilder.append(f.get(obj).toString());
 				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
     		}
@@ -99,7 +110,38 @@ public class Inspector {
     	System.out.println(outputBuilder.toString());
     }
     
-    private String interpretModifiers(int mods) {
+    private Object processArray(Field f, Object obj) throws IllegalArgumentException, IllegalAccessException {
+		StringBuilder output = new StringBuilder();
+    	
+		Class<?> t = f.getType();
+		Class compType = t.getComponentType();
+		Object arr = f.get(obj);
+		int length = Array.getLength(arr);
+		
+		if(compType.equals(Integer.TYPE)) {
+			
+		}else if (compType.equals(Byte.TYPE)) {
+			
+		}else if (compType.equals(Short.TYPE)) {
+			
+		} else if (compType.equals(Long.TYPE)) {
+			
+		}else if (compType.equals(Character.TYPE)) {
+			
+		} else if (compType.equals(Boolean.TYPE)) {
+			
+		} else if (compType.equals(Double.TYPE)) {
+			
+		} else if (compType.equals(Float.TYPE)) {
+			
+		} else { //Object Array
+			
+		}
+    	
+		return null;
+	}
+
+	private String interpretModifiers(int mods) {
     	String toReturn = " ";
     	
     	if(Modifier.isPublic(mods))
